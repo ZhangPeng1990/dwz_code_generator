@@ -1,0 +1,33 @@
+<#include "/macro.include"/>
+<#assign className = table.className>   
+<#assign classNameFirstLower = table.classNameFirstLower>   
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<#assign idJavaType = table.idColumn.javaType>
+<#macro mapperEl value>${r"#{"}${value}}</#macro>
+<#macro namespace>${basepackage}.${persistence}</#macro>
+
+<mapper namespace="${basepackage}.${persistence}.mapper.${className}Mapper">
+	<resultMap id="rm" type="${basepackage}.${persistence}.beans.${className}">
+		<#list table.columns as column>
+		<result property="${column.columnNameFirstLower}" jdbcType="${column.jdbcType}" column="${column.sqlName}"/>
+		</#list>
+	</resultMap>
+	<sql id="Base_Column_List">
+		<#list table.columns as _column>
+		${_column.sqlName}<#if _column_has_next>,</#if>
+		</#list>
+	</sql>
+
+	<select id="findPageBreakByCondition" parameterType="${basepackage}.business.vo.${table.classNameBo}ConditionVO" resultMap="rm">
+		SELECT
+			<#list table.columns as _column>
+			t.${_column.sqlName}<#if _column_has_next>,</#if>
+			</#list>
+		FROM
+			${table.sqlName} t
+		WHERE
+			1 = 1
+	</select>
+</mapper>
+
